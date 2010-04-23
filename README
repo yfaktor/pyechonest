@@ -1,10 +1,14 @@
 Welcome to beta_pyechonest, a python wrapper around the Beta Echo Nest API (v4).
 
-This wrapper should allow you to get started using the Beta Echo Nest API quickly and easily. The only requirement is a developer API key, which you can get for free from http://developer.echonest.com/account/register/.
+This wrapper should allow you to get started using the Beta Echo Nest API 
+quickly and easily. The only requirement is a developer API key, which you 
+can get for free from http://developer.echonest.com/account/register/.
 
-For documentation questions, please refer to the official beta api docs, which are available at http://beta.developer.echonest.com/.
+For documentation questions, please refer to the official beta api docs, 
+which are available at http://beta.developer.echonest.com/.
 
-IMPORTANT: You must let pyechonest know about your API key before you use it. There are two ways to let beta_pyechonest know about your API key:
+IMPORTANT: You must let pyechonest know about your API key before you use it. 
+There are two ways to let beta_pyechonest know about your API key:
 	
 	1. Set the variable ECHO_NEST_API_KEY in your environment to your key.
 		(bourne-like shells) 	$ export ECHO_NEST_API_KEY=YOUR_API_KEY
@@ -14,7 +18,8 @@ IMPORTANT: You must let pyechonest know about your API key before you use it. Th
 		>>> from beta_pyechonest import config
 		>>> config.ECHO_NEST_API_KEY = YOUR_API_KEY
 
-***Note that beta_pyechonest currently only supports artist and song methods in the new API***
+***Note that beta_pyechonest currently only supports artist and song methods 
+in the new API***
 
 Examples:
 	Search for artist:
