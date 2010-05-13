@@ -1,21 +1,39 @@
 #!/usr/bin/env python
 # encoding: utf-8
+
 """
-Utility functions to support the Echo Nest web API interface.  This
-module is not meant for other uses and should not be used unless
-modifying or extending the package.
+Copyright (c) 2010 The Echo Nest. All rights reserved.
+Created by Tyler Williams on 2010-04-25.
+
+Utility functions to support the Echo Nest web API interface.
 """
 
 import urllib
 import urllib2
 import config
 import logging
-import simplejson as json
 import socket
+import re
 
-SUCCESS_STATUS_CODES = ( 0, )
-FAILURE_THING_ID_STATUS_CODES = (7, 6)
-FAILURE_API_KEY_STATUS_CODES = (12,)
+try:
+    import json
+except ImportError:
+    import simplejson as json
+
+TYPENAMES = (
+    ('AR', 'artist'),
+    ('SO', 'song'),
+    ('RE', 'release'),
+    ('TR', 'track'),
+    ('PE', 'person'),
+    ('DE', 'device'),
+    ('LI', 'listener'),
+    ('ED', 'editor'),
+    ('TW', 'tweditor'),
+)
+foreign_regex = re.compile(r'^.+?:(%s):([^^]+)\^?([0-9\.]+)?' % r'|'.join(n[1] for n in TYPENAMES))
+short_regex = re.compile(r'^((%s)[0-9A-Z]{16})\^?([0-9\.]+)?' % r'|'.join(n[0] for n in TYPENAMES))
+long_regex = re.compile(r'music://id.echonest.com/.+?/(%s)/(%s)[0-9A-Z]{16}\^?([0-9\.]+)?' % (r'|'.join(n[0] for n in TYPENAMES), r'|'.join(n[0] for n in TYPENAMES)))
 
 class EchoNestAPIError(Exception):
     """
@@ -39,7 +57,7 @@ def verify_successful(response_dict):
     del response_dict['response']['status']
 
 
-def callm(method, param_dict, POST=False, socket_timeout=10):
+def callm(method, param_dict, POST=False, socket_timeout=5):
     '''
     Call the api! 
     Param_dict is a *regular* *python* *dictionary* so if you want to have multi-valued params

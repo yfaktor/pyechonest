@@ -1,28 +1,40 @@
-import util
-from proxies import song_proxy
-from results import make_results
+#!/usr/bin/env python
+# encoding: utf-8
 
-class Song(song_proxy):
-    """An Song object (loosely covers http://beta.developer.echonest.com/song.html)
+"""
+Copyright (c) 2010 The Echo Nest. All rights reserved.
+Created by Tyler Williams on 2010-04-25.
+
+The Song module loosely covers http://beta.developer.echonest.com/song.html
+Refer to the official api documentation if you are unsure about something.
+"""
+
+import util
+from proxies import SongProxy
+from results import Result
+
+class Song(SongProxy):
+    """
+    A Song object
     
     Create a song object like so:
-        s = song.Song(SOXZYYG127F3E1B7A2')
+        s = song.Song('SOXZYYG127F3E1B7A2')
     
-    Attributes:
+    Attributes: (**attributes** are guaranteed to exist as soon as an artist object exists)
         **id**: Echo Nest Song ID
         **title**: Song Title
         **artist_name**: Artist Name
         **artist_id**: Artist ID
-        audio_summary: Audio Summary
-        song_hotttnesss: Song Hotttnesss
-        artist_hotttnesss: Artist Hotttnesss
-        artist_familiarity: Artist Familiarity
-        artist_location: Artist Location
-        tracks: Tracks 
+        audio_summary: An Audio Summary Result object
+        song_hotttnesss: A float representing a song's hotttnesss
+        artist_hotttnesss: A float representing a song's parent artist's hotttnesss
+        artist_familiarity: A float representing a song's parent artist's familiarity
+        artist_location: A string specifying a song's parent artist's location
+        tracks: A list of track result objects
     
     """
-    def __init__(self, id, **kwargs):
-        super(Song, self).__init__(id, **kwargs)
+    def __init__(self, id, buckets=[], **kwargs):
+        super(Song, self).__init__(id, buckets, **kwargs)
     
     def __repr__(self):
         return "<%s - %s>" % (self.type.encode('utf-8'), self.title.encode('utf-8'))
@@ -33,40 +45,40 @@ class Song(song_proxy):
         
     def get_audio_summary(self, cache=True):
         if not (cache and ('audio_summary' in self.cache)):
-            response = self.get_attribute('profile', id=self.id, bucket='audio_summary')
-            self.cache['audio_summary'] = make_results('audio_summary', response, lambda x: x['songs']['song'][0]['audio_summary'])
-        return self.cache['audio_summary']
+            response = self.get_attribute('profile', bucket='audio_summary')
+            self.cache['audio_summary'] = response['songs'][0]['audio_summary']
+        return Result('audio_summary', self.cache['audio_summary'])
     
     audio_summary = property(get_audio_summary)
     
     def get_song_hotttnesss(self, cache=True):
         if not (cache and ('song_hotttnesss' in self.cache)):
-            response = self.get_attribute('profile', id=self.id, bucket='song_hotttnesss')
-            self.cache['song_hotttnesss'] = make_results('song_hotttnesss', response, lambda x: x['songs']['song'][0]['song_hotttnesss'])
+            response = self.get_attribute('profile', bucket='song_hotttnesss')
+            self.cache['song_hotttnesss'] = response['songs'][0]['song_hotttnesss']
         return self.cache['song_hotttnesss']
     
     song_hotttnesss = property(get_song_hotttnesss)
     
     def get_artist_hotttnesss(self, cache=True):
         if not (cache and ('artist_hotttnesss' in self.cache)):
-            response = self.get_attribute('profile', id=self.id, bucket='artist_hotttnesss')
-            self.cache['artist_hotttnesss'] = make_results('artist_hotttnesss', response, lambda x: x['songs']['song'][0]['artist_hotttnesss'])
+            response = self.get_attribute('profile', bucket='artist_hotttnesss')
+            self.cache['artist_hotttnesss'] = response['songs'][0]['artist_hotttnesss']
         return self.cache['artist_hotttnesss']
     
     artist_hotttnesss = property(get_artist_hotttnesss)
     
     def get_artist_familiarity(self, cache=True):
         if not (cache and ('artist_familiarity' in self.cache)):
-            response = self.get_attribute('profile', id=self.id, bucket='artist_familiarity')
-            self.cache['artist_familiarity'] = make_results('artist_familiarity', response, lambda x: x['songs']['song'][0]['artist_familiarity'])
+            response = self.get_attribute('profile', bucket='artist_familiarity')
+            self.cache['artist_familiarity'] = response['songs'][0]['artist_familiarity']
         return self.cache['artist_familiarity']
     
     artist_familiarity = property(get_artist_familiarity)
     
     def get_artist_location(self, cache=True):
         if not (cache and ('artist_location' in self.cache)):
-            response = self.get_attribute('profile', id=self.id, bucket='artist_location')
-            self.cache['artist_location'] = make_results('artist_location', response, lambda x: x['songs']['song'][0]['artist_location'])
+            response = self.get_attribute('profile', bucket='artist_location')
+            self.cache['artist_location'] = response['songs'][0]['artist_location']
         return self.cache['artist_location']
     
     artist_location = property(get_artist_location)
@@ -76,22 +88,22 @@ class Song(song_proxy):
             kwargs = {
                 'method_name':'profile',
                 'bucket':['tracks'],
-                'id':self.id,
             }
             if catalog:
                 kwargs['bucket'].append('id:%s' % catalog)
             if limit:
                 kwargs['limit'] = 'true'
             response = self.get_attribute(**kwargs)
-            self.cache['tracks'] = make_results('track', response, lambda x: x['songs']['song'][0]['tracks']['track'])
-        return self.cache['tracks']
+            self.cache['tracks'] = response['songs'][0]['tracks']
+        return [Result('track', t) for t in self.cache['tracks']]
     
     tracks = property(get_tracks) 
 
 
 def search(title=None, artist=None, artist_id=None, combined=None, description=None, results=None, max_tempo=None, \
                 min_tempo=None, max_duration=None, min_duration=None, max_loudness=None, min_loudness=None, \
-                max_familiarity=None, min_familiarity=None, max_hotttnesss=None, min_hotttnesss=None, mode=None, \
+                artist_max_familiarity=None, artist_min_familiarity=None, artist_max_hotttnesss=None, \
+                artist_min_hotttnesss=None, song_max_hotttnesss=None, song_min_hotttnesss=None, mode=None, \
                 key=None, max_latitude=None, min_latitude=None, max_longitude=None, min_longitude=None, \
                 sort=None, buckets=[], limit=False):
     """search for songs"""
@@ -120,14 +132,18 @@ def search(title=None, artist=None, artist_id=None, combined=None, description=N
         kwargs['max_loudness'] = max_loudness
     if min_loudness:
         kwargs['min_loudness'] = min_loudness
-    if max_familiarity:
-        kwargs['max_familiarity'] = max_familiarity
-    if min_familiarity:
-        kwargs['min_familiarity'] = min_familiarity
-    if max_hotttnesss:
-        kwargs['max_hotttnesss'] = max_hotttnesss
-    if min_hotttnesss:
-        kwargs['min_hotttnesss'] = min_hotttnesss
+    if artist_max_familiarity:
+        kwargs['artist_max_familiarity'] = artist_max_familiarity
+    if artist_min_familiarity:
+        kwargs['artist_min_familiarity'] = artist_min_familiarity
+    if artist_max_hotttnesss:
+        kwargs['artist_max_hotttnesss'] = artist_max_hotttnesss
+    if artist_min_hotttnesss:
+        kwargs['artist_min_hotttnesss'] = artist_min_hotttnesss
+    if song_max_hotttnesss:
+        kwargs['song_max_hotttnesss'] = song_max_hotttnesss
+    if song_min_hotttnesss:
+        kwargs['song_min_hotttnesss'] = song_min_hotttnesss
     if mode:
         kwargs['mode'] = mode
     if key:
@@ -149,7 +165,7 @@ def search(title=None, artist=None, artist_id=None, combined=None, description=N
     
     result = util.callm("%s/%s" % ('song', 'search'), kwargs)
     fix = lambda x : dict((str(k), v) for (k,v) in x.iteritems())
-    return [Song(**fix(s_dict)) for s_dict in result['response']['songs']['song']]
+    return [Song(**fix(s_dict)) for s_dict in result['response']['songs']]
 
 def profile(ids, buckets=[], limit=False):
     """get the profiles for multiple songs at once"""
@@ -164,5 +180,5 @@ def profile(ids, buckets=[], limit=False):
     
     result = util.callm("%s/%s" % ('song', 'profile'), kwargs)
     fix = lambda x : dict((str(k), v) for (k,v) in x.iteritems())
-    return [Song(**fix(s_dict)) for s_dict in result['response']['songs']['song']]
+    return [Song(**fix(s_dict)) for s_dict in result['response']['songs']]
 

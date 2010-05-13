@@ -1,7 +1,19 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
+"""
+Copyright (c) 2010 The Echo Nest. All rights reserved.
+Created by Tyler Williams on 2010-04-25.
+"""
+
 import util
 import logging
 from util import attrdict
 
+# I want a:
+#   generic object that takes a dict and turns it into an object
+#   should take on the name of a key in the dict
+#   should handle lists
 class Result(attrdict):
     def __init__(self, result_type, result_dict):
         self.type = result_type

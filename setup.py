@@ -1,9 +1,18 @@
 #!/usr/bin/env python
+# encoding: utf-8
 
-__version__ = "$Revision: 0 $"
+__version__ = "$Revision: 4.1 $"
 # $Source$
-
+from sys import version
 from distutils.core import setup
+
+if version < '2.6':
+    requires=['urllib', 'urllib2', 'simplejson']
+elif version >= '2.6':
+    requires=['urllib', 'urllib2', 'json']
+else:
+    #unknown version?
+    requires=['urllib', 'urllib2']
 
 setup(name='beta_pyechonest',
       version='4.0',
@@ -16,8 +25,5 @@ setup(name='beta_pyechonest',
       download_url='http://code.google.com/p/pyechonest/',
       package_dir={'beta_pyechonest':'src'},
       packages=['beta_pyechonest'],
-      requires=['urllib',
-                'urllib2',
-                'simplejson',
-                ]
+      requires=requires
      )
