@@ -83,7 +83,7 @@ class Song(SongProxy):
     
     artist_location = property(get_artist_location)
     
-    def get_tracks(self, catalog='paulify', limit=False, cache=True):
+    def get_tracks(self, catalog=None, limit=False, cache=True):
         if not (cache and ('tracks' in self.cache)):
             kwargs = {
                 'method_name':'profile',
@@ -94,7 +94,7 @@ class Song(SongProxy):
             if limit:
                 kwargs['limit'] = 'true'
             response = self.get_attribute(**kwargs)
-            self.cache['tracks'] = response['songs'][0]['tracks']
+            self.cache['tracks'] = response['songs'][0].get('tracks', [])
         return [Result('track', t) for t in self.cache['tracks']]
     
     tracks = property(get_tracks) 
