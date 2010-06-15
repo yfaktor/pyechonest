@@ -19,8 +19,9 @@ class GenericProxy(attrdict):
 
 
 class ArtistProxy(GenericProxy):
-    def __init__(self, identifier, buckets=[], **kwargs):
+    def __init__(self, identifier, buckets = None, **kwargs):
         super(ArtistProxy, self).__init__()
+        buckets = buckets or []
         self.id = identifier
         self.type = 'artist'
         kwargs = dict((str(k), v) for (k,v) in kwargs.iteritems())
@@ -41,8 +42,9 @@ class ArtistProxy(GenericProxy):
         return super(ArtistProxy, self).get_attribute(*args, **kwargs) 
 
 class SongProxy(GenericProxy):
-    def __init__(self, identifier, buckets=[], **kwargs):
+    def __init__(self, identifier, buckets = None, **kwargs):
         super(SongProxy, self).__init__()
+        buckets = buckets or []
         self.id = identifier
         self.type = 'song'
         kwargs = dict((str(k), v) for (k,v) in kwargs.iteritems())

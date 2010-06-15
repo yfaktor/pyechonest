@@ -33,7 +33,8 @@ class Song(SongProxy):
         tracks: A list of track result objects
     
     """
-    def __init__(self, id, buckets=[], **kwargs):
+    def __init__(self, id, buckets = None, **kwargs):
+        buckets = buckets or []
         super(Song, self).__init__(id, buckets, **kwargs)
     
     def __repr__(self):
@@ -167,8 +168,10 @@ def search(title=None, artist=None, artist_id=None, combined=None, description=N
     fix = lambda x : dict((str(k), v) for (k,v) in x.iteritems())
     return [Song(**fix(s_dict)) for s_dict in result['response']['songs']]
 
-def profile(ids, buckets=[], limit=False):
+def profile(ids, buckets = None, limit=False):
     """get the profiles for multiple songs at once"""
+
+    buckets = buckets or []
     if not isinstance(ids, list):
         ids = [ids]
     kwargs = {}

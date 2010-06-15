@@ -187,7 +187,7 @@ class Artist(ArtistProxy):
     reviews = property(get_reviews)
     
     def get_similar(self, results=15, start=0, cache=True, max_familiarity=None, min_familiarity=None, \
-                    max_hotttnesss=None, min_hotttnesss=None, buckets=[], limit=False):
+                    max_hotttnesss=None, min_hotttnesss=None, buckets = None, limit=False):
         """Return similar artists to this one
         
         Args:
@@ -203,6 +203,8 @@ class Artist(ArtistProxy):
         Returns:
             A list of similar Artist objects
         """
+
+        buckets = buckets or []
         kwargs = {}
         if max_familiarity:
             kwargs['max_familiarity'] = max_familiarity
@@ -274,7 +276,7 @@ class Artist(ArtistProxy):
         return self.cache.get(idspace)
     
 
-def search(name=None, description=None, results=15, buckets=[], limit=False, exact=False, \
+def search(name=None, description=None, results=15, buckets = None, limit=False, exact=False, \
             sounds_like=False, sort=None, max_familiarity=None, min_familiarity=None, \
             max_hotttnesss=None, min_hotttnesss=None):
     """Search for artists by name, description, or constraint.
@@ -295,6 +297,8 @@ def search(name=None, description=None, results=15, buckets=[], limit=False, exa
     Returns:
         A list of Artist objects
     """
+
+    buckets = buckets or []
     kwargs = {}
     if name:
         kwargs['name'] = name
@@ -326,7 +330,7 @@ def search(name=None, description=None, results=15, buckets=[], limit=False, exa
     fix = lambda x : dict((str(k), v) for (k,v) in x.iteritems())
     return [Artist(**fix(a_dict)) for a_dict in result['response']['artists']]
 
-def top_hottt(start=0, results=15, buckets=[], limit=False):
+def top_hottt(start=0, results=15, buckets = None, limit=False):
     """Get the top hotttest artists, according to The Echo Nest
     
     Args:
@@ -338,6 +342,8 @@ def top_hottt(start=0, results=15, buckets=[], limit=False):
     Returns:
         A list of hottt Artist objects
         """
+
+    buckets = buckets or []
     kwargs = {}
     if start:
         kwargs['start'] = start
@@ -354,7 +360,7 @@ def top_hottt(start=0, results=15, buckets=[], limit=False):
     return [Artist(**fix(a_dict)) for a_dict in result['response']['artists']]
 
 
-def similar(names=None, ids=None, start=0, results=15, buckets=[], limit=False, max_familiarity=None, min_familiarity=None,
+def similar(names=None, ids=None, start=0, results=15, buckets = None, limit=False, max_familiarity=None, min_familiarity=None,
             max_hotttnesss=None, min_hotttnesss=None):
     """Return similar artists to this one
     
@@ -373,6 +379,7 @@ def similar(names=None, ids=None, start=0, results=15, buckets=[], limit=False, 
         A list of similar Artist objects
     """
     
+    buckets = buckets or []
     kwargs = {}
 
     if ids:
