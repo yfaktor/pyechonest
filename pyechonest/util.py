@@ -7,19 +7,27 @@ Created by Tyler Williams on 2010-04-25.
 
 Utility functions to support the Echo Nest web API interface.
 """
-
 import urllib
 import urllib2
+import httplib
 import config
 import logging
 import socket
 import re
+import time
+from hashlib import md5
+try:
+    import cPickle as pickle
+except:
+    import pickle
 
 try:
     import json
 except ImportError:
     import simplejson as json
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 TYPENAMES = (
     ('AR', 'artist'),
     ('SO', 'song'),
@@ -57,12 +65,14 @@ def verify_successful(response_dict):
     del response_dict['response']['status']
 
 
-def callm(method, param_dict, POST=False, socket_timeout=5):
-    '''
+def callm(method, param_dict, POST = False, socket_timeout=config.CALL_TIMEOUT, data = None):
+    """
     Call the api! 
     Param_dict is a *regular* *python* *dictionary* so if you want to have multi-valued params
     put them in a list.
-    '''
+    
+    ** note, if we require 2.6, we can get rid of this timeout munging.
+    """
     param_dict['api_key'] = config.ECHO_NEST_API_KEY
     param_list = []
     
@@ -73,19 +83,42 @@ def callm(method, param_dict, POST=False, socket_timeout=5):
             if isinstance(val, unicode):
                 val = val.encode('utf-8')
             param_list.append( (key,val) )
-    logging.debug("PARAMS: %s" % str(param_list))
     params = urllib.urlencode(param_list)
     socket.setdefaulttimeout(socket_timeout)
+    tic=time.time()
+
     if(POST):
-        url = 'http://%s/%s/%s/%s' % (config.API_HOST, config.API_SELECTOR, config.API_VERSION, method)
-        f = urllib.urlopen(url, params)
+        if (not method == 'track/upload') or (param_dict.has_key('url')):
+            """
+            this is a normal POST call
+            """
+            url = 'http://%s/%s/%s/%s' % (config.API_HOST, config.API_SELECTOR, config.API_VERSION, method)
+            f = urllib.urlopen(url, params)
+
+        else:
+            """
+            upload with a local file is special, as the body of the request is the content of the file,
+            and the other parameters stay on the URL
+            """
+            url = '/%s/%s/%s?%s' % (config.API_SELECTOR, config.API_VERSION, 
+                                        method, params)
+            conn = httplib.HTTPConnection(config.API_HOST, port = 80)
+            conn.request('POST', url, body = data, headers = {'Content-Type': 'application/octet-stream'})
+            f = conn.getresponse()
+
     else:
+        """
+        just a normal GET call
+        """
         url = 'http://%s/%s/%s/%s?%s' % (config.API_HOST, config.API_SELECTOR, config.API_VERSION, 
-                                    method, params)
+                                        method, params)
         f = urllib.urlopen(url)
+
+
+    toc=time.time()
     socket.setdefaulttimeout(None)
     if config.TRACE_API_CALLS:
-        logging.info(url)
+        logging.info("%2.2fs : %s" % (toc-tic, url))
     response_dict = json.loads(f.read())
     verify_successful(response_dict)
     return response_dict
@@ -117,4 +150,42 @@ class attrdict(dict):
         dict.__init__(self, *args, **kwargs)
         self.__dict__ = self
 
+class memoize(object):
+    """
+        Caches the result of a class method inside the instance.
+        big ups to: http://eoyilmaz.blogspot.com/2009/09/python-function-decorators-caching.html
+    """
+    def __init__(self, method):        
+        if not isinstance( method, property ):
+            self._method = method
+            self._name = method.__name__
+            self._isProperty = False
+        else:
+            self._method = method.fget
+            self._name = method.fget.__name__
+            self._isProperty = True
+        self._obj = None
+
+    def __get__(self, inst, cls):
+        self._obj = inst
+        if self._isProperty:
+            return self.__call__()
+        else:
+            return self
+
+    def __call__(self, *args, **kwargs):
+        print 'args: %s, kwargs %s' % (args, kwargs)
+        key = self._name+md5(pickle.dumps(args, 2)).hexdigest()+md5(pickle.dumps(kwargs, 2)).hexdigest()
+        print 'key is: %s' % (key,)
+        # call the function and store the result as a cache
+        if not hasattr(self._obj, key) or getattr(self._obj, key ) == None:
+            data = self._method(self._obj, *args, **kwargs )
+            setattr( self._obj, key, data )
+
+        return getattr( self._obj, key )
+
+    def __repr__(self):
+        """Return the function's representation
+        """
+        return self._obj.__repr__()
 

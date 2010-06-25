@@ -62,4 +62,14 @@ class SongProxy(GenericProxy):
         kwargs['id'] = self.id
         return super(SongProxy, self).get_attribute(*args, **kwargs)
 
+class TrackProxy(GenericProxy):
+    def __init__(self, identifier, md5, properties):
+        """
+        Let's always get the bucket `audio_summary`
+        """
+        super(TrackProxy, self).__init__()
+        self.id = identifier
+        self.md5 = md5
+        self.type = 'track'
+        self.__dict__.update(properties)
 

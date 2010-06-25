@@ -23,7 +23,7 @@ setup(name='beta_pyechonest',
       maintainer_email='tyler@echonest.com',
       url='http://code.google.com/p/pyechonest/',
       download_url='http://code.google.com/p/pyechonest/',
-      package_dir={'beta_pyechonest':'src'},
+      package_dir={'beta_pyechonest':'pyechonest'},
       packages=['beta_pyechonest'],
       requires=requires
      )

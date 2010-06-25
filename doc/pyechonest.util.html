@@ -1,14 +1,14 @@
 
 <!doctype html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html><head><title>Python: module beta_pyechonest.util</title>
+<html><head><title>Python: module pyechonest.util</title>
 </head><body bgcolor="#f0f0f8">
 
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#7799ee">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="beta_pyechonest.html"><font color="#ffffff">beta_pyechonest</font></a>.util</strong></big></big></font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="pyechonest.html"><font color="#ffffff">pyechonest</font></a>.util</strong></big></big></font></td
 ><td align=right valign=bottom
-><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Library/Python/2.6/site-packages/beta_pyechonest/util.py">/Library/Python/2.6/site-packages/beta_pyechonest/util.py</a></font></td></tr></table>
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/tylerw/Documents/echonest/projects/beta_pyechonest/branches/rc-branch/pyechonest/util.py">/Users/tylerw/Documents/echonest/projects/beta_pyechonest/branches/rc-branch/pyechonest/util.py</a></font></td></tr></table>
     <p><tt>Copyright&nbsp;(c)&nbsp;2010&nbsp;The&nbsp;Echo&nbsp;Nest.&nbsp;All&nbsp;rights&nbsp;reserved.<br>
 Created&nbsp;by&nbsp;Tyler&nbsp;Williams&nbsp;on&nbsp;2010-04-25.<br>
 &nbsp;<br>
@@ -20,11 +20,14 @@ Utility&nbsp;functions&nbsp;to&nbsp;support&nbsp;the&nbsp;Echo&nbsp;Nest&nbsp;we
 <font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
     
 <tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="beta_pyechonest.config.html">beta_pyechonest.config</a><br>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="pyechonest.config.html">pyechonest.config</a><br>
+<a href="httplib.html">httplib</a><br>
 <a href="json.html">json</a><br>
 </td><td width="25%" valign=top><a href="logging.html">logging</a><br>
+<a href="cPickle.html">cPickle</a><br>
 <a href="re.html">re</a><br>
 </td><td width="25%" valign=top><a href="socket.html">socket</a><br>
+<a href="time.html">time</a><br>
 <a href="urllib.html">urllib</a><br>
 </td><td width="25%" valign=top><a href="urllib2.html">urllib2</a><br>
 </td></tr></table></td></tr></table><p>
@@ -38,13 +41,19 @@ Utility&nbsp;functions&nbsp;to&nbsp;support&nbsp;the&nbsp;Echo&nbsp;Nest&nbsp;we
 <dt><font face="helvetica, arial"><a href="__builtin__.html#dict">__builtin__.dict</a>(<a href="__builtin__.html#object">__builtin__.object</a>)
 </font></dt><dd>
 <dl>
-<dt><font face="helvetica, arial"><a href="beta_pyechonest.util.html#attrdict">attrdict</a>
+<dt><font face="helvetica, arial"><a href="pyechonest.util.html#attrdict">attrdict</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="__builtin__.html#object">__builtin__.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="pyechonest.util.html#memoize">memoize</a>
 </font></dt></dl>
 </dd>
 <dt><font face="helvetica, arial"><a href="exceptions.html#Exception">exceptions.Exception</a>(<a href="exceptions.html#BaseException">exceptions.BaseException</a>)
 </font></dt><dd>
 <dl>
-<dt><font face="helvetica, arial"><a href="beta_pyechonest.util.html#EchoNestAPIError">EchoNestAPIError</a>
+<dt><font face="helvetica, arial"><a href="pyechonest.util.html#EchoNestAPIError">EchoNestAPIError</a>
 </font></dt></dl>
 </dd>
 </dl>
@@ -58,7 +67,7 @@ Utility&nbsp;functions&nbsp;to&nbsp;support&nbsp;the&nbsp;Echo&nbsp;Nest&nbsp;we
 <td colspan=2><tt>Generic&nbsp;API&nbsp;errors.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
-<dd><a href="beta_pyechonest.util.html#EchoNestAPIError">EchoNestAPIError</a></dd>
+<dd><a href="pyechonest.util.html#EchoNestAPIError">EchoNestAPIError</a></dd>
 <dd><a href="exceptions.html#Exception">exceptions.Exception</a></dd>
 <dd><a href="exceptions.html#BaseException">exceptions.BaseException</a></dd>
 <dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
@@ -78,7 +87,7 @@ Data descriptors defined here:<br>
 </dl>
 <hr>
 Data and other attributes inherited from <a href="exceptions.html#Exception">exceptions.Exception</a>:<br>
-<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object at 0x100119f80&gt;<dd><tt>T.<a href="#EchoNestAPIError-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;object&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object at 0x100119f80&gt;<dd><tt>T.<a href="#EchoNestAPIError-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
 
 <hr>
 Methods inherited from <a href="exceptions.html#BaseException">exceptions.BaseException</a>:<br>
@@ -116,7 +125,7 @@ Data descriptors inherited from <a href="exceptions.html#BaseException">exceptio
     
 <tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
-<dd><a href="beta_pyechonest.util.html#attrdict">attrdict</a></dd>
+<dd><a href="pyechonest.util.html#attrdict">attrdict</a></dd>
 <dd><a href="__builtin__.html#dict">__builtin__.dict</a></dd>
 <dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
 </dl>
@@ -203,11 +212,38 @@ In&nbsp;either&nbsp;case,&nbsp;this&nbsp;is&nbsp;followed&nbsp;by:&nbsp;for&nbsp
 Data and other attributes inherited from <a href="__builtin__.html#dict">__builtin__.dict</a>:<br>
 <dl><dt><strong>__hash__</strong> = None</dl>
 
-<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object at 0x1001222a0&gt;<dd><tt>T.<a href="#attrdict-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;object&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object at 0x1001222a0&gt;<dd><tt>T.<a href="#attrdict-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
 
-<dl><dt><strong>fromkeys</strong> = &lt;built-in method fromkeys of type object at 0x101317d40&gt;<dd><tt><a href="__builtin__.html#dict">dict</a>.<a href="#attrdict-fromkeys">fromkeys</a>(S[,v])&nbsp;-&gt;&nbsp;New&nbsp;<a href="__builtin__.html#dict">dict</a>&nbsp;with&nbsp;keys&nbsp;from&nbsp;S&nbsp;and&nbsp;values&nbsp;equal&nbsp;to&nbsp;v.<br>
+<dl><dt><strong>fromkeys</strong> = &lt;built-in method fromkeys of type object at 0x10131cdc0&gt;<dd><tt><a href="__builtin__.html#dict">dict</a>.<a href="#attrdict-fromkeys">fromkeys</a>(S[,v])&nbsp;-&gt;&nbsp;New&nbsp;<a href="__builtin__.html#dict">dict</a>&nbsp;with&nbsp;keys&nbsp;from&nbsp;S&nbsp;and&nbsp;values&nbsp;equal&nbsp;to&nbsp;v.<br>
 v&nbsp;defaults&nbsp;to&nbsp;None.</tt></dl>
 
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="memoize">class <strong>memoize</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Caches&nbsp;the&nbsp;result&nbsp;of&nbsp;a&nbsp;class&nbsp;method&nbsp;inside&nbsp;the&nbsp;instance.<br>
+big&nbsp;ups&nbsp;to:&nbsp;<a href="http://eoyilmaz.blogspot.com/2009/09/python-function-decorators-caching.html">http://eoyilmaz.blogspot.com/2009/09/python-function-decorators-caching.html</a><br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="memoize-__call__"><strong>__call__</strong></a>(self, *args, **kwargs)</dt></dl>
+
+<dl><dt><a name="memoize-__get__"><strong>__get__</strong></a>(self, inst, cls)</dt></dl>
+
+<dl><dt><a name="memoize-__init__"><strong>__init__</strong></a>(self, method)</dt></dl>
+
+<dl><dt><a name="memoize-__repr__"><strong>__repr__</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;function's&nbsp;representation</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
 </td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#eeaa77">
@@ -215,9 +251,12 @@ v&nbsp;defaults&nbsp;to&nbsp;None.</tt></dl>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-callm"><strong>callm</strong></a>(method, param_dict, POST<font color="#909090">=False</font>, socket_timeout<font color="#909090">=5</font>)</dt><dd><tt>Call&nbsp;the&nbsp;api!&nbsp;<br>
+<td width="100%"><dl><dt><a name="-callm"><strong>callm</strong></a>(method, param_dict, POST<font color="#909090">=False</font>, socket_timeout<font color="#909090">=10</font>, data<font color="#909090">=None</font>)</dt><dd><tt>Call&nbsp;the&nbsp;api!&nbsp;<br>
 Param_dict&nbsp;is&nbsp;a&nbsp;*regular*&nbsp;*python*&nbsp;*dictionary*&nbsp;so&nbsp;if&nbsp;you&nbsp;want&nbsp;to&nbsp;have&nbsp;multi-valued&nbsp;params<br>
-put&nbsp;them&nbsp;in&nbsp;a&nbsp;list.</tt></dd></dl>
+put&nbsp;them&nbsp;in&nbsp;a&nbsp;list.<br>
+&nbsp;<br>
+**&nbsp;note,&nbsp;if&nbsp;we&nbsp;require&nbsp;2.6,&nbsp;we&nbsp;can&nbsp;get&nbsp;rid&nbsp;of&nbsp;this&nbsp;timeout&nbsp;munging.</tt></dd></dl>
+ <dl><dt><a name="-md5"><strong>md5</strong></a> = openssl_md5(...)</dt><dd><tt>Returns&nbsp;a&nbsp;md5&nbsp;hash&nbsp;<a href="__builtin__.html#object">object</a>;&nbsp;optionally&nbsp;initialized&nbsp;with&nbsp;a&nbsp;string</tt></dd></dl>
  <dl><dt><a name="-postChunked"><strong>postChunked</strong></a>(host, selector, fields, files)</dt><dd><tt>Attempt&nbsp;to&nbsp;replace&nbsp;postMultipart()&nbsp;with&nbsp;nearly-identical&nbsp;interface.<br>
 (The&nbsp;files&nbsp;tuple&nbsp;no&nbsp;longer&nbsp;requires&nbsp;the&nbsp;filename,&nbsp;and&nbsp;we&nbsp;only&nbsp;return<br>
 the&nbsp;response&nbsp;body.)&nbsp;<br>
@@ -238,7 +277,8 @@ basis&nbsp;on&nbsp;urllib2).</tt></dd></dl>
     
 <tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><strong>TYPENAMES</strong> = (('AR', 'artist'), ('SO', 'song'), ('RE', 'release'), ('TR', 'track'), ('PE', 'person'), ('DE', 'device'), ('LI', 'listener'), ('ED', 'editor'), ('TW', 'tweditor'))<br>
-<strong>foreign_regex</strong> = &lt;_sre.SRE_Pattern object at 0x101312b80&gt;<br>
-<strong>long_regex</strong> = &lt;_sre.SRE_Pattern object at 0x101307320&gt;<br>
-<strong>short_regex</strong> = &lt;_sre.SRE_Pattern object at 0x10130c8c0&gt;</td></tr></table>
+<strong>foreign_regex</strong> = &lt;_sre.SRE_Pattern object at 0x10131b240&gt;<br>
+<strong>logger</strong> = &lt;logging.Logger instance at 0x100527dd0&gt;<br>
+<strong>long_regex</strong> = &lt;_sre.SRE_Pattern object at 0x10131c1b0&gt;<br>
+<strong>short_regex</strong> = &lt;_sre.SRE_Pattern object at 0x1013054e0&gt;</td></tr></table>
 </body></html>

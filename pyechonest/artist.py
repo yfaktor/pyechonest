@@ -34,6 +34,7 @@ class Artist(ArtistProxy):
         news: A list of news document Result objects
         reviews: A list of review document Result objects
         similar: A list of similar Artist objects
+        terms: A list of terms document Result objects
         urls: A urls result object
         video: A list of video document Result objects
     """
@@ -45,7 +46,7 @@ class Artist(ArtistProxy):
     
     def __str__(self):
         return self.name.encode('utf-8')
-    
+     
     def get_hotttnesss(self, cache=True):
         """Get our numerical description of how hottt an artist currently is
         
@@ -73,10 +74,15 @@ class Artist(ArtistProxy):
         Returns:
             A list of audio document Result objects
         """
-        if not (cache and ('audio' in self.cache)):
+        
+        if cache and ('audio' in self.cache) and results==15 and start==0:
+            return [Result('audio', a) for a in self.cache['audio']]
+        else:
             response = self.get_attribute('audio', results=results, start=start)
-            self.cache['audio'] = response['audio']
-        return [Result('audio', a) for a in self.cache['audio']]
+            if results==15 and start==0:
+                self.cache['audio'] = response['audio']
+            return [Result('audio', a) for a in response['audio']]
+
     
     audio = property(get_audio)
     
@@ -92,10 +98,13 @@ class Artist(ArtistProxy):
         Returns:
             A list of biography document Result objects
         """
-        if not (cache and ('biographies' in self.cache)):
+        if cache and ('biographies' in self.cache) and results==15 and start==0 and license=='unknown':
+            return [Result('biographies', a) for a in self.cache['biographies']]
+        else:
             response = self.get_attribute('biographies', results=results, start=start)
-            self.cache['biographies'] = response['biographies']
-        return [Result('biography', b) for b in self.cache['biographies']]
+            if results==15 and start==0 and license=='unknown':
+                self.cache['biographies'] = response['biographies']
+            return [Result('biographies', a) for a in response['biographies']]
     
     biographies = property(get_biographies)    
     
@@ -109,10 +118,13 @@ class Artist(ArtistProxy):
         Returns:
             A list of blog document Result objects
         """
-        if not (cache and ('blogs' in self.cache)):
+        if cache and ('blogs' in self.cache) and results==15 and start==0:
+            return [Result('blogs', a) for a in self.cache['blogs']]
+        else:
             response = self.get_attribute('blogs', results=results, start=start)
-            self.cache['blogs'] = response['blogs']
-        return [Result('blogs', b) for b in self.cache['blogs']]
+            if results==15 and start==0:
+                self.cache['blogs'] = response['blogs']
+            return [Result('blogs', a) for a in response['blogs']]
     
     blogs = property(get_blogs)
        
@@ -144,10 +156,13 @@ class Artist(ArtistProxy):
         Returns:
             A list of image document Result objects
         """
-        if not (cache and ('images' in self.cache)):
+        if cache and ('images' in self.cache) and results==15 and start==0 and license=='unknown':
+            return [Result('images', a) for a in self.cache['images']]
+        else:
             response = self.get_attribute('images', results=results, start=start)
-            self.cache['images'] = response['images']
-        return [Result('image', i) for i in self.cache['images']]
+            if results==15 and start==0 and license=='unknown':
+                self.cache['images'] = response['images']
+            return [Result('images', a) for a in response['images']]
     
     images = property(get_images)    
     
@@ -162,10 +177,14 @@ class Artist(ArtistProxy):
         Returns:
             A list of news document Result objects
         """
-        if not (cache and ('news' in self.cache)):
+        if cache and ('news' in self.cache) and results==15 and start==0:
+            return [Result('news', a) for a in self.cache['news']]
+        else:
             response = self.get_attribute('news', results=results, start=start)
-            self.cache['news'] = response['news']
-        return [Result('news', n) for n in self.cache['news']]
+            if results==15 and start==0:
+                self.cache['news'] = response['news']
+            return [Result('news', a) for a in response['news']]
+
     
     news = property(get_news)
     
@@ -179,23 +198,25 @@ class Artist(ArtistProxy):
         Returns:
             A list of review document Result objects
         """
-        if not (cache and ('reviews' in self.cache)):
+        if cache and ('reviews' in self.cache) and results==15 and start==0:
+            return [Result('reviews', a) for a in self.cache['reviews']]
+        else:
             response = self.get_attribute('reviews', results=results, start=start)
-            self.cache['reviews'] = response['reviews']
-        return [Result('review', r) for r in self.cache['reviews']]
+            if results==15 and start==0:
+                self.cache['reviews'] = response['reviews']
+            return [Result('reviews', a) for a in response['reviews']]
+
     
     reviews = property(get_reviews)
     
     def get_similar(self, results=15, start=0, cache=True, max_familiarity=None, min_familiarity=None, \
-                    max_hotttnesss=None, min_hotttnesss=None, buckets = None, limit=False):
+                    max_hotttnesss=None, min_hotttnesss=None):
         """Return similar artists to this one
         
         Args:
             cache: A boolean indicating whether or not the cached value should be used (if available). Defaults to True.
             results: An integer number of results to return
             start: An integer starting value for the result set
-            buckets: A list of strings specifying which buck
-            limit: A boolean indicating whether or not to limit the results to one of the id spaces specified in buckets
             max_familiarity: A float specifying the max familiarity of artists to search for
             min_familiarity: A float specifying the min familiarity of artists to search for
             max_hotttnesss: A float specifying the max hotttnesss of artists to search for
@@ -203,8 +224,6 @@ class Artist(ArtistProxy):
         Returns:
             A list of similar Artist objects
         """
-
-        buckets = buckets or []
         kwargs = {}
         if max_familiarity:
             kwargs['max_familiarity'] = max_familiarity
@@ -214,18 +233,39 @@ class Artist(ArtistProxy):
             kwargs['max_hotttnesss'] = max_hotttnesss
         if min_hotttnesss:
             kwargs['min_hotttnesss'] = min_hotttnesss
-        if buckets:
-            kwargs['bucket'] = buckets
-        if limit:
-            kwargs['limit'] = 'true'
         
-        if not (cache and ('similar' in self.cache)):
-            response = self.get_attribute('similar', results=results, start=start, **kwargs)
-            self.cache['similar'] = response['artists']
         fix = lambda x : dict((str(k), v) for (k,v) in x.iteritems())
-        return [Artist(**fix(a)) for a in self.cache['similar']]
+        
+        if cache and ('similar' in self.cache) and results==15 and start==0 and (not kwargs):
+            return [Artist(**fix(a)) for a in self.cache['similar']]
+        else:
+            response = self.get_attribute('similar', results=results, start=start, **kwargs)
+            if results==15 and start==0 and (not kwargs):
+                self.cache['similar'] = response['artists']
+            return [Artist(**fix(a)) for a in response['artists']]
+        
     
-    similar = property(get_similar)
+    similar = property(get_similar)    
+    
+    def get_terms(self, sort='weight', cache=True):
+        """Get the terms associated with an artist
+        
+        Args:
+            cache: A boolean indicating whether or not the cached value should be used (if available). Defaults to True.
+            sort: A string specifying the desired sorting type (weight or frequency)
+            
+        Results:
+            A list of term document Result objects
+        """
+        if cache and ('terms' in self.cache) and sort=='weight':
+            return [Result('terms', a) for a in self.cache['terms']]
+        else:
+            response = self.get_attribute('terms', sort=sort)
+            if sort=='weight':
+                self.cache['terms'] = response['terms']
+            return [Result('terms', a) for a in response['terms']]
+    
+    terms = property(get_terms)
     
     def get_urls(self, cache=True):
         """Get the urls for an artist
@@ -254,10 +294,13 @@ class Artist(ArtistProxy):
         Returns:
             A list of video document Result objects
         """
-        if not (cache and ('video' in self.cache)):
+        if cache and ('video' in self.cache) and results==15 and start==0:
+            return [Result('video', a) for a in self.cache['video']]
+        else:
             response = self.get_attribute('video', results=results, start=start)
-            self.cache['video'] = response['video']
-        return [Result('video', v) for v in self.cache['video']]
+            if results==15 and start==0:
+                self.cache['video'] = response['video']
+            return [Result('video', a) for a in response['video']]
     
     video = property(get_video)
 
@@ -272,7 +315,9 @@ class Artist(ArtistProxy):
         """
         if not (cache and (idspace in self.cache)):
             response = self.get_attribute('profile', bucket=['id:'+idspace])
-            self.cache[idspace] = response['artist'].get(idspace)
+            foreign_ids = response['artist'].get("foreign_ids")
+            for f in foreign_ids:
+                self.cache[f['catalog']] = f['foreign_id']
         return self.cache.get(idspace)
     
 
@@ -297,7 +342,6 @@ def search(name=None, description=None, results=15, buckets = None, limit=False,
     Returns:
         A list of Artist objects
     """
-
     buckets = buckets or []
     kwargs = {}
     if name:
@@ -342,7 +386,6 @@ def top_hottt(start=0, results=15, buckets = None, limit=False):
     Returns:
         A list of hottt Artist objects
         """
-
     buckets = buckets or []
     kwargs = {}
     if start:
@@ -357,7 +400,26 @@ def top_hottt(start=0, results=15, buckets = None, limit=False):
     """Get top hottt artists"""
     result = util.callm("%s/%s" % ('artist', 'top_hottt'), kwargs)
     fix = lambda x : dict((str(k), v) for (k,v) in x.iteritems())
-    return [Artist(**fix(a_dict)) for a_dict in result['response']['artists']]
+    return [Artist(**fix(a_dict)) for a_dict in result['response']['artists']]    
+
+
+def top_terms(results=15):
+    """Get a list of the top overall terms
+        
+    Args:
+        results: An integer number of results to return
+        
+    Returns:
+        A list of term document Result objects
+    """
+    
+    kwargs = {}
+    if results:
+        kwargs['results'] = results
+    
+    """Get top terms"""
+    result = util.callm("%s/%s" % ('artist', 'top_terms'), kwargs)
+    return [Result('term', a_dict) for a_dict in result['response']['terms']]
 
 
 def similar(names=None, ids=None, start=0, results=15, buckets = None, limit=False, max_familiarity=None, min_familiarity=None,
