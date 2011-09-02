@@ -219,7 +219,7 @@ class Catalog(CatalogProxy):
     
     read = property(read_items)
 
-    def get_feed(self, buckets=None, since=None, results=15, start=0):
+    def get_feed(self, buckets=None, since=None, results=15, high_relevance=False, start=0):
         """
         Returns feed (news, blogs, reviews, audio, video) for the catalog artists; response depends on requested buckets
 
@@ -227,6 +227,8 @@ class Catalog(CatalogProxy):
 
         Kwargs:
             buckets (list): A list of strings specifying which feed items to retrieve
+
+            high_relevance (bool): if True only items that are highly relevant for this artist will be returned. Currently only news items are filtered for high relevance
 
             results (int): An integer number of results to return
 
@@ -253,6 +255,8 @@ class Catalog(CatalogProxy):
         """
         kwargs = {}
         kwargs['bucket'] = buckets or []
+        if high_relevance:
+            kwargs['high_relevance'] = 'true'
 	if since:
 		kwargs['since']=since  
         response = self.get_attribute("feed", results=results, start=start, **kwargs)
